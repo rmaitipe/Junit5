@@ -5,16 +5,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.ZipCodePair;
 import com.ZipLimiter;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 
 /*
  * This class is to Unit test the ZipLimiter class. 
@@ -31,7 +29,7 @@ public class ZipLimiterTest {
 	* These are the values to be compared against the data read from files in test case scenarios.
 	* Called automatically before the Test class is run.
 	*/
- 	@Before
+ 	@BeforeEach
     public void setUp() {
  		log.info("@Before - setUp");
     	expectedtest1 = read("resources/test/expectedv2/expectedZipInputNoConflictPairs.txt");
@@ -40,7 +38,7 @@ public class ZipLimiterTest {
 		expectedtest4 = read("resources/test/expectedv2/expectedZipInputBadDataPairs.txt");
     }
     
-    @After
+    @AfterEach
     public void tearDown() {
     	log.info("@After - tearDown");
     }
@@ -55,16 +53,16 @@ public class ZipLimiterTest {
 		ZipLimiter zip = new ZipLimiter();
 		
 		List<ZipCodePair> test1 = zip.test("resources/test/zipInputNoConflictPairs.txt");
-		Assert.assertEquals(expectedtest1, test1);
+		Assertions.assertEquals(expectedtest1, test1);
 		
 		List<ZipCodePair> test2 = zip.test("resources/test/zipInputMergeSortedPairs.txt");
-		Assert.assertEquals(expectedtest2, test2);
+		Assertions.assertEquals(expectedtest2, test2);
 		
 		List<ZipCodePair> test3 = zip.test("resources/test/zipInputMergeUnsortedPairs.txt");
-		Assert.assertEquals(expectedtest3, test3);
+		Assertions.assertEquals(expectedtest3, test3);
 		
 		List<ZipCodePair> test4 = zip.test("resources/test/zipInputBadDataPairs.txt");
-		Assert.assertEquals(expectedtest4, test4);		
+		Assertions.assertEquals(expectedtest4, test4);
 	}
     
     /*

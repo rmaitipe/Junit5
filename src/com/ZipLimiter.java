@@ -22,7 +22,7 @@ public class ZipLimiter {
 	private String zipB;
 	private static String fileInput ="resources/zipInputPair.txt";
 	private int lineNumber;
-	private static Log log = LogFactory.getLog(ZipLimiter.class);
+	private static Log logger = LogFactory.getLog(ZipLimiter.class);
 	
     /*
     * Returns the compressed List<Pair> after combining overlapping ranges.
@@ -37,7 +37,7 @@ public class ZipLimiter {
     	//try with resources
     	try (BufferedReader br = new BufferedReader(new FileReader(fileInput))){
 	        String line = null;
-	        log.info("Reading and Validating contents of file  :" +fileInput);
+	        logger.info("Reading and Validating contents of file  :" +fileInput);
 	        while((line = br.readLine()) != null){
 	        	 lineNumber++;
 	             String [] strArray =line.split(",");
@@ -49,20 +49,16 @@ public class ZipLimiter {
 	         	 		zipInputMatchList.add(pair);
 	         	 	}
 	             } else{
-	            	 log.info("Error at line number  : "+lineNumber+" Input is not in a 5 digit format");
+	            	 logger.info("Error at line number  : "+lineNumber+" Input is not in a 5 digit format");
 	             }
 	        }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+			logger.error(e.getMessage());
         }
-
 	    zipInputMatchList.sort(Comparator.comparing(ZipCodePair::getZipA));
 	    zipOutputMatchList =mergeBoundries(zipInputMatchList);
 	    zipOutputMatchList.forEach(item->System.out.println(item));
 	    return zipOutputMatchList;
-	    
 	}
 	
     /*
@@ -73,17 +69,17 @@ public class ZipLimiter {
     */
 	private boolean validateStop(String zip) {
 		boolean isStop = false;
-	    	try{
-	    		Integer.parseInt(zip);
-	    	}
-	    	catch(NumberFormatException e){
-	    		log.error("Error at line number  : "+lineNumber+" Input is not a valid number");
-	    		isStop =true;
-	    	}
-	    	if(zip.length()!=5 && !isStop){
-	    		log.error("Error at line number  : "+lineNumber+" Input is not a 5 digit zip code");
-	    		isStop =true;
-	    	}
+		try{
+			Integer.parseInt(zip);
+		}
+		catch(NumberFormatException e){
+			logger.error("Error at line number  : "+lineNumber+" Input is not a valid number");
+			isStop =true;
+		}
+		if(zip.length()!=5 && !isStop){
+			logger.error("Error at line number  : "+lineNumber+" Input is not a 5 digit zip code");
+			isStop =true;
+		}
 		return isStop;
 	}
 

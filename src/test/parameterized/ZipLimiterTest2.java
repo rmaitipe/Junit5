@@ -9,28 +9,24 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
 import com.ZipCodePair;
 import com.ZipLimiter;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /*
  * This class is to Unit test the ZipLimiter class. 
  */
-@RunWith(Parameterized.class)
 public class ZipLimiterTest2 {
 
 	private static Log log = LogFactory.getLog(ZipLimiterTest2.class);
-	private String inputFile;
-	private String outputFile;
-	
-    @Parameterized.Parameters
-    public static List<Object[]> fileNames() {
+
+	public static List<Object[]> fileNames() {
       return Arrays.asList(new Object[][] {
          { "resources/test/zipInputNoConflictPairs.txt", "resources/test/expectedv2/expectedZipInputNoConflictPairs.txt" },
          { "resources/test/zipInputMergeSortedPairs.txt", "resources/test/expectedv2/expectedZipInputMergeSortedPairs.txt"},
@@ -38,23 +34,17 @@ public class ZipLimiterTest2 {
          { "resources/test/zipInputBadDataPairs.txt", "resources/test/expectedv2/expectedZipInputBadDataPairs.txt"}
       });
     }
-    
-	// Constructor is initialized with one set of parameters every time
-	public ZipLimiterTest2(String input, String output) 
-	{
-		this.inputFile = input;
-		this.outputFile = output;
-	}
+
 	/*
 	* These are the values to be compared against the data read from files in test case scenarios.
 	* Called automatically before the Test class is run.
 	*/
- 	@Before
+ 	@BeforeEach
     public void setUp() {
  		log.info("@Before - setUp");
     }
     
-    @After
+    @AfterEach
     public void tearDown() {
     	log.info("@After - tearDown");
     }
@@ -64,12 +54,13 @@ public class ZipLimiterTest2 {
     * Test cases: No Merge, Sorted Merge, UnSorted Merge, Merge With BadData
     *
     */
-    @Test
-	public void zipLimiterDataTest() {
+	@ParameterizedTest
+	@MethodSource("fileNames")
+	public void zipLimiterDataTest(String inputFile, String outputFile) {
 		ZipLimiter zip = new ZipLimiter();
 		List<ZipCodePair> testDataSet = zip.test(inputFile);
 		List<ZipCodePair> outputDataSet = read(outputFile);
-		Assert.assertEquals(outputDataSet, testDataSet);
+		Assertions.assertEquals(outputDataSet, testDataSet);
 	}
     
     /*
@@ -97,9 +88,10 @@ public class ZipLimiterTest2 {
                 	  log.info("Error at line number  : "+lineNumber+" Input is not in a 5 digit format");
                   }
              }
-         } catch (IOException e) {
+        } catch (IOException e) {
 			log.error(e);
-         }
+        }
  	    return zipOutputMatchList;
- 	} 	
+ 	}
+
 }
